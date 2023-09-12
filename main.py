@@ -62,7 +62,12 @@ def get_optimal_lineup(lineup: list) -> float:
     for slot in lineup_slots:
         optimal_lineup.append(get_best_by_skill(lineup_copy, slot))
 
-    return sum([x.points for x in optimal_lineup])
+    try:
+        optimal_score = sum([x.points for x in optimal_lineup])
+    except AttributeError:
+        optimal_score = 0
+    
+    return optimal_score
 
 def get_team_awards(box_scores: list):
     """ gets the team based performance awards"""
@@ -198,7 +203,10 @@ def get_accolades(box_scores: list):
 def get_roster_effeciency(lineup, score):
     """ gets the roster effeciency"""
     optimal_score = round(get_optimal_lineup(lineup), 2)
-    effeciency = round(score / optimal_score, 2)
+    try:
+        effeciency = round(score / optimal_score, 2)
+    except ZeroDivisionError:
+        effeciency = 0
     return (score, optimal_score, effeciency)
 
 def prepare_card(accolade):
@@ -254,8 +262,13 @@ def prepare_card(accolade):
     # overrides for player cards
     if ("Boom" in accolade.title or "Bust" in accolade.title):
         card["middle_text"] = player_name
-        card["middle_sub_text"] = f"{accolade.player.position} - {accolade.player.proTeam}"
-        card["points"] = round(accolade.player.points, 2)
+        try:
+            card["middle_sub_text"] = f"{accolade.player.position} - {accolade.player.proTeam}"
+            card["points"] = round(accolade.player.points, 2)
+        except AttributeError:
+            card["middle_sub_text"] = ""
+            card["points"] = ""
+        
 
 
     return card
@@ -266,9 +279,10 @@ def index():
     cards_data = []
     if request.method == 'POST':
         league_id = request.form.get('league_id')
-        if league_id:
+        week = int(request.form.get('week'))
+        if league_id and week:
             league = League(league_id, datetime.date.today().year, debug=False)
-            weekly_scores = league.box_scores(1)
+            weekly_scores = league.box_scores(week)
             accolades = get_accolades(weekly_scores)
             for accolade in accolades:
                 cards_data.append(prepare_card(accolade))
@@ -278,6 +292,7 @@ def index():
 
     <form action="/" method="post">
         Enter League ID: <input type="text" name="league_id">
+        Enter Week: <input type="number" name="week">
         <input type="submit" value="Get Accolades">
     </form>
 
