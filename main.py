@@ -73,7 +73,7 @@ def get_team_awards(box_scores: list):
     """ gets the team based performance awards"""
     dominant_winner = Accolade("Most Dominant Win", box_scores[0].home_team, 0)
     narrowest_winner = Accolade("Closest Win", box_scores[0].home_team, 9999)
-    highest_loser = Accolade("Most Undeserving Loss", box_scores[0].home_team, 0)
+    highest_loser = Accolade("Toughest Loss", box_scores[0].home_team, 0)
     lowest_winner = Accolade("Luckiest Win", box_scores[0].home_team, 9999)
     highest_scorer = Accolade("Highest Scorer", box_scores[0].home_team, 0)
     lowest_scorer = Accolade("Lowest Scorer", box_scores[0].home_team, 9999)
@@ -237,20 +237,33 @@ def prepare_card(accolade):
     subtitles = {
         "Most Dominant Win": f"{team_name} dominated '{opp_name}' by {diff_score:.2f} points!",
         "Closest Win": f"{team_name} beat '{opp_name}' by just {diff_score:.2f} points",
-        "Most Undeserving Loss": f"{team_name} scored more than any other loser",
+        "Toughest Loss": f"{team_name} scored more than any other loser",
         "Luckiest Win": f"{team_name} scored less than any other winner",
-        "Highest Scorer": "👑",
-        "Lowest Scorer": "💩",
+        "Highest Scorer": "👑"*10,
+        "Lowest Scorer": "💩"*10,
         "Best Manager": f"{team_name} scored {eff_score:.2f}% of their possible {optimal} points!",
         "Worst Manager": f"{team_name} scored {eff_score:.2f}% of their possible {optimal} points.",
-        "Biggest Boom": f"{team_name} started {player_name}, the boom player of the week,"
-                        f"scoring {boom_diff} more than projected!",
-        "Biggest Bust": f"{team_name} started {player_name}, the boom player of the week,"
-                        f"scoring {bust_diff} less than projected!",
+        "Biggest Boom": f"{team_name} started {player_name}, the player of the week,"
+                        f" scoring {boom_diff} more than projected!",
+        "Biggest Bust": f"{team_name} started {player_name}, the bust of the week,"
+                        f" scoring {bust_diff} less than projected!",
+    }
+    emoji_dict = {
+    "Most Dominant Win": "💪",
+    "Closest Win": "😅",
+    "Toughest Loss": "💔",
+    "Luckiest Win": "🍀",
+    "Highest Scorer": "👑",
+    "Lowest Scorer": "💩",
+    "Best Manager": "🌟",
+    "Worst Manager": "🌮",
+    "Biggest Boom": "💥",
+    "Biggest Bust": "📉"
     }
 
+
     card = {
-        "title": accolade.title,  # Assuming accolade always has a title.
+        "title": emoji_dict[accolade.title] + " " + accolade.title,  # Assuming accolade always has a title.
         "subtitle": subtitles.get(accolade.title, ""),
         "image": getattr(accolade.team, 'logo_url', None),
         "middle_text": getattr(accolade.team, 'team_name', ""),
@@ -301,15 +314,15 @@ def index():
     <div class="cards-wrapper">
         {% for card in cards_data %}
             <div class="card">
-                <h2>{{ card.title }}</h2>
-                {% if card.subtitle %}<p>{{ card.subtitle }}</p>{% endif %}
+                <h2 class="card-title">{{ card.title }}</h2>
+                {% if card.subtitle %}<p class="card-subtitle">{{ card.subtitle }}</p>{% endif %}
 
                 <div class="content-row">  <!-- Container div for flexbox -->
-                    {% if card.image %}<img src="{{ card.image }}" alt="Image" style="width: 100px; height: 100px;">{% endif %}
-                    <div>
-                        <p>{{ card.middle_text }}</p>
-                        {% if card.middle_sub_text %}<p>{{ card.middle_sub_text }}</p>{% endif %}
-                        {% if card.middle_sub_sub_text %}<p>{{ card.middle_sub_sub_text }}</p>{% endif %}
+                    {% if card.image %}<img class="card-image" src="{{ card.image }}" alt="Image">{% endif %}
+                    <div class="card-content">
+                        <p class="card-middle-text">{{ card.middle_text }}</p>
+                        {% if card.middle_sub_text %}<p class="card-middle-subtext">{{ card.middle_sub_text }}</p>{% endif %}
+                        {% if card.middle_sub_sub_text %}<p class="card-middle-sub-subtext">{{ card.middle_sub_sub_text }}</p>{% endif %}
                     </div>
                 </div>
 
@@ -318,7 +331,6 @@ def index():
         {% endfor %}
     </div>
     ''', cards_data=cards_data)
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
