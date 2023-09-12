@@ -265,12 +265,14 @@ def prepare_card(accolade):
         try:
             card["middle_sub_text"] = f"{accolade.player.position} - {accolade.player.proTeam}"
             card["points"] = round(accolade.player.points, 2)
+            if accolade.player.position != "D/ST":
+                card["image"] = f"https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/{accolade.player.playerId}.png"
+            else:
+                card["image"] = f"https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/{accolade.player.proTeam}.png"
         except AttributeError:
             card["middle_sub_text"] = ""
             card["points"] = ""
         
-
-
     return card
 
 
