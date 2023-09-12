@@ -1,0 +1,96 @@
+.card {
+    border: 1px solid #ccc;         /* Border around the card */
+    padding: 16px;                  /* Space inside the card */
+    margin: 16px 0;                 /* Space outside the card */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);  /* Shadow effect */
+    max-width: 400px;               /* Maximum width of the card */
+    position: relative;             /* To position the points properly */
+}
+
+.points {
+    position: absolute;             /* Absolute position of the points */
+    bottom: 16px;                      /* 16px from the top of the card */
+    right: 16px;                    /* 16px from the right of the card */
+    font-weight: bold;              /* Make the points bold */
+    font-size: 48px;
+    clear: both;
+}
+
+.content-row {
+    display: flex;          /* turns on flexbox */
+    align-items: start;     /* vertically aligns children to the top */
+}
+
+.content-row img {
+    margin-right: 20px;     /* provides some space between the image and the text */
+}
+
+.card-title {
+    margin: 0;
+    font-size: 32px;
+}
+
+.card-subtitle {
+    margin: 0;
+    font-size: 12px;
+    color: #777;
+}
+
+.card-body {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.card-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.card-content {
+    flex: 1;
+    margin-left: 16px;
+}
+
+.card-middle-text {
+    font-weight: bold;
+    font-size: 32px;
+    margin: 0;
+}
+
+.card-middle-subtext {
+    margin: 4px 0 0;
+    color: #555;
+}
+
+.card-middle-sub-subtext {
+    margin: 4px 0 0;
+    color: #999;
+}
+
+.card-points {
+    margin: 0;
+    font-size: 24px;
+    margin-left: 16px;
+    text-align: right;
+}
+
+.cards-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+}
+
+.card {
+    border: 1px solid #ccc;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 400px;
+    position: relative;
+    flex: 0 0 400px;
+    /* ... rest of your card styling */
+}
