@@ -7,6 +7,8 @@ from espn_api.requests.espn_requests import ESPNAccessDenied
 from flask import Flask, request, render_template, flash
 
 app = Flask(__name__, template_folder="templates")
+secret = secrets.token_urlsafe(32)
+app.secret_key = secret
 """ def find_optimal_players_for_position(players: list, slot: str) -> League.BoxPlayer:
     Return a list of players with the highest points for a given slot.
 """
@@ -295,8 +297,6 @@ def prepare_card(accolade):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    secret = secrets.token_urlsafe(32)
-    app.secret_key = secret
     cards_data = []
     if request.method == 'POST':
         league_id = request.form.get('league_id')
