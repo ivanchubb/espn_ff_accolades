@@ -310,8 +310,14 @@ def index():
         if league_id and week:
             try:
                 league = League(league_id, datetime.date.today().year, debug=False)
-            except (ESPNAccessDenied, ESPNInvalidLeague, ESPNUnknownError):
-                flash(f"Error fetching data for League ID: {league_id}. Please ensure it's set to public.")
+            except ESPNAccessDenied as e:
+                flash(f"League ID: {league_id} isn't set to public. You can set it to public under 'League' > 'Settings'.")
+                return render_template("accolades.html")
+            except ESPNInvalidLeague as e:
+                flash(e.args[0])
+                return render_template("accolades.html")
+            except ESPNUnknownError as e:
+                flash(f"{e.args[0]}, ensure your League ID is correct")
                 return render_template("accolades.html")
                 
             weekly_scores = league.box_scores(week)
@@ -323,3 +329,4 @@ def index():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
