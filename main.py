@@ -3,7 +3,7 @@
 import datetime
 import secrets
 from espn_api.football import League
-from espn_api.requests.espn_requests import ESPNAccessDenied
+from espn_api.requests.espn_requests import ESPNAccessDenied, ESPNInvalidLeague, ESPNUnknownError
 from flask import Flask, request, render_template, flash
 
 app = Flask(__name__, template_folder="templates")
@@ -310,7 +310,7 @@ def index():
         if league_id and week:
             try:
                 league = League(league_id, datetime.date.today().year, debug=False)
-            except ESPNAccessDenied:
+            except (ESPNAccessDenied, ESPNInvalidLeague, ESPNUnknownError):
                 flash(f"Error fetching data for League ID: {league_id}. Please ensure it's set to public.")
                 return render_template("accolades.html")
                 
