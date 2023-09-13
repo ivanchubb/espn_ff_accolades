@@ -1,10 +1,12 @@
 #! /usr/bin/python3
 
 import datetime
+import secrets
 from espn_api.football import League
-from flask import Flask, request, render_template_string
+from espn_api.requests.espn_requests import ESPNAccessDenied
+from flask import Flask, request, render_template, flash
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 """ def find_optimal_players_for_position(players: list, slot: str) -> League.BoxPlayer:
     Return a list of players with the highest points for a given slot.
 """
@@ -39,7 +41,7 @@ def get_best_by_skill(lineup_copy: list, slot: str):
     try:
         best_available = sorted(eligible_players, key=lambda x: x.points)[-1]
     except IndexError:
-        print(f"No eligible players for: {slot}")
+        # print(f"No eligible players for: {slot}")
         return []
     lineup_copy.remove(best_available)
 
@@ -172,6 +174,8 @@ def get_player_awards(box_scores):
     for matchup in box_scores:
         for lineup in [matchup.home_lineup, matchup.away_lineup]:
             for player in lineup:
+                if player.slot_position == "BE":
+                    continue
                 performance = player.points - player.projected_points
                 if performance > boom_player.points:
                     boom_player.player = player
@@ -291,47 +295,31 @@ def prepare_card(accolade):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    secret = secrets.token_urlsafe(32)
+    app.secret_key = secret
     cards_data = []
     if request.method == 'POST':
         league_id = request.form.get('league_id')
-        week = int(request.form.get('week'))
+        try:
+            week = int(request.form.get('week'))
+            if week > 17 or week < 1:
+                raise ValueError
+        except ValueError:
+            flash(f"Please provide a week between 1 and 17")
+            return render_template("accolades.html")
         if league_id and week:
-            league = League(league_id, datetime.date.today().year, debug=False)
+            try:
+                league = League(league_id, datetime.date.today().year, debug=False)
+            except ESPNAccessDenied:
+                flash(f"Error fetching data for League ID: {league_id}. Please ensure it's set to public.")
+                return render_template("accolades.html")
+                
             weekly_scores = league.box_scores(week)
             accolades = get_accolades(weekly_scores)
             for accolade in accolades:
                 cards_data.append(prepare_card(accolade))
 
-    return render_template_string('''
-   <link rel="stylesheet" href="{{ url_for('static', filename='accolades.css') }}">
-
-    <form action="/" method="post">
-        Enter League ID: <input type="text" name="league_id">
-        Enter Week: <input type="number" name="week">
-        <input type="submit" value="Get Accolades">
-    </form>
-
-    <div class="cards-wrapper">
-        {% for card in cards_data %}
-            <div class="card">
-                <h2 class="card-title">{{ card.title }}</h2>
-                {% if card.subtitle %}<p class="card-subtitle">{{ card.subtitle }}</p>{% endif %}
-
-                <div class="content-row">  <!-- Container div for flexbox -->
-                    {% if card.image %}<img class="card-image" src="{{ card.image }}" alt="Image">{% endif %}
-                    <div class="card-content">
-                        <p class="card-middle-text">{{ card.middle_text }}</p>
-                        {% if card.middle_sub_text %}<p class="card-middle-subtext">{{ card.middle_sub_text }}</p>{% endif %}
-                        {% if card.middle_sub_sub_text %}<p class="card-middle-sub-subtext">{{ card.middle_sub_sub_text }}</p>{% endif %}
-                    </div>
-                </div>
-
-                <span class="points">{{ card.points }}</span>
-            </div>
-        {% endfor %}
-    </div>
-    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="ivanchubb" data-description="If you like this, consider buying me a coffee ☕." data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
-    ''', cards_data=cards_data)
+    return render_template("accolades.html", cards_data=cards_data)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

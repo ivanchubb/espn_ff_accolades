@@ -1,0 +1,45 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='accolades.css') }}">
+
+<form action="/" method="post">
+    Enter League ID: <input type="text" name="league_id">
+    Enter Week: <input type="number" name="week">
+    <input type="submit" value="Get Accolades">
+</form>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endwith %}
+
+{% if not cards_data %}
+    <div id="instructions">
+        <p>You can get your ESPN League ID in: "League" > "Settings" </p>
+    </div>
+{% endif %}
+
+
+<div class="cards-wrapper">
+    {% for card in cards_data %}
+        <div class="card">
+            <h2 class="card-title">{{ card.title }}</h2>
+            {% if card.subtitle %}<p class="card-subtitle">{{ card.subtitle }}</p>{% endif %}
+
+            <div class="content-row">  <!-- Container div for flexbox -->
+                {% if card.image %}<img class="card-image" src="{{ card.image }}" alt="Image">{% endif %}
+                <div class="card-content">
+                    <p class="card-middle-text">{{ card.middle_text }}</p>
+                    {% if card.middle_sub_text %}<p class="card-middle-subtext">{{ card.middle_sub_text }}</p>{% endif %}
+                    {% if card.middle_sub_sub_text %}<p class="card-middle-sub-subtext">{{ card.middle_sub_sub_text }}</p>{% endif %}
+                </div>
+            </div>
+
+            <span class="points">{{ card.points }}</span>
+        </div>
+    {% endfor %}
+</div>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="ivanchubb" data-description="If you like this, consider buying me a coffee ☕." data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
