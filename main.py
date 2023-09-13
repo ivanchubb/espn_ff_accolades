@@ -176,7 +176,7 @@ def get_player_awards(box_scores):
     for matchup in box_scores:
         for lineup in [matchup.home_lineup, matchup.away_lineup]:
             for player in lineup:
-                if player.slot_position == "BE":
+                if player.slot_position in ["BE", "IR"]:
                     continue
                 performance = player.points - player.projected_points
                 if performance > boom_player.points:
