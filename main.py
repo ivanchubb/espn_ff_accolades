@@ -330,6 +330,8 @@ def index():
             </div>
         {% endfor %}
     </div>
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="ivanchubb" data-description="If you like this, consider buying me a coffee ☕." data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
     ''', cards_data=cards_data)
 
 if __name__ == '__main__':
