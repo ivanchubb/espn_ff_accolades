@@ -66,16 +66,18 @@ def get_optimal_lineup(lineup: list) -> float:
     if "OP" in lineup_slots:
         lineup_slots.remove("OP")
         lineup_slots.append("OP")
-        
+
     lineup_copy = lineup.copy()
 
     for slot in lineup_slots:
         optimal_lineup.append(get_best_by_skill(lineup_copy, slot))
 
-    try:
-        optimal_score = sum([x.points for x in optimal_lineup])
-    except AttributeError:
-        optimal_score = 0
+    optimal_score = 0
+    for x in optimal_lineup:
+        try:
+            optimal_score += x.points
+        except AttributeError:
+            continue
     
     return optimal_score
 
