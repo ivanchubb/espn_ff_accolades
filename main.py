@@ -61,6 +61,12 @@ def get_optimal_lineup(lineup: list) -> float:
 
     # ensures that main positions (ex: "RB") get priority over FLEX ones (ex: "WR/RB")
     lineup_slots = sorted(lineup_slots, key=len)
+
+    # a bit hacky, but superflex has to be last
+    if "OP" in lineup_slots:
+        lineup_slots.remove("OP")
+        lineup_slots.append("OP")
+        
     lineup_copy = lineup.copy()
 
     for slot in lineup_slots:
