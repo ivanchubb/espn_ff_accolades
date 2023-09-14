@@ -1,11 +1,15 @@
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESPN Weekly Accolades Tool</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='accolades.css') }}">    
-</head>
-<body>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ESPN Weekly Accolades Tool</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='accolades.css') }}">    
+    </head>
 
+<body>
+<div class="page-wrapper">
+        
 <form action="/" method="post">
     Enter League ID: <input type="text" name="league_id">
     Enter Week: <input type="number" name="week">
@@ -49,4 +53,15 @@
     {% endfor %}
 </div>
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="ivanchubb" data-description="If you like this, consider buying me a coffee ☕." data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+</div>
+
+<footer>
+    <div class="contact-info">
+        <h2>Contact Info:</h2>
+        <p>Email: <a href="mailto:ivanchubb@gmail.com">ivanchubb@gmail.com</a></p>
+        <p>For bug reports or feature requests, feel free to email.</p>
+    </div>
+</footer>
+
 </body>
+</html>

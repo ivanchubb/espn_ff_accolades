@@ -168,7 +168,6 @@ def get_lineup_awards(box_scores):
     best_manager.optimal_score = effeciency_dict[best_manager.team][1]
     best_manager.effeciency = effeciency_dict[best_manager.team][2]
 
-
     worst_manager.team = min(effeciency_dict, key=lambda k: effeciency_dict[k][2])
     worst_manager.points = effeciency_dict[worst_manager.team][0]
     worst_manager.optimal_score = effeciency_dict[worst_manager.team][1]

@@ -89,3 +89,44 @@
     position: relative;
     flex: 0 0 400px;
 }
+
+footer {
+    background-color: #f8f8f8;  /* light gray */
+    padding: 20px 0;
+    text-align: center;
+    border-top: 1px solid #e7e7e7;  /* subtle border */
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;  /* make sure it takes up the full viewport height */
+}
+
+.contact-info {
+    margin-top: auto; /* pushes the footer to the bottom */
+}
+
+.contact-info h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.contact-info p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.contact-info a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
