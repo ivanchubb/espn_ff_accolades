@@ -255,12 +255,12 @@ def prepare_card(accolade):
         "Luckiest Win": f"{team_name} scored less than any other winner",
         "Highest Scorer": "👑"*10,
         "Lowest Scorer": "💩"*10,
-        "Best Manager": f"{team_name} scored {eff_score:.2f}% of their possible {optimal} points!",
-        "Worst Manager": f"{team_name} scored {eff_score:.2f}% of their possible {optimal} points.",
+        "Best Manager": f"{team_name} scored {eff_score:.2f}% of their possible {optimal:.2f} points!",
+        "Worst Manager": f"{team_name} scored {eff_score:.2f}% of their possible {optimal:.2f} points.",
         "Biggest Boom": f"{team_name} started {player_name}, the player of the week,"
-                        f" scoring {boom_diff} more than projected!",
+                        f" scoring {boom_diff:.2f} more than projected!",
         "Biggest Bust": f"{team_name} started {player_name}, the bust of the week,"
-                        f" scoring {bust_diff} less than projected!",
+                        f" scoring {bust_diff:.2f} less than projected!",
     }
     emoji_dict = {
     "Most Dominant Win": "💪",
