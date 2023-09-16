@@ -321,12 +321,15 @@ def index():
                 flash("Getting league data...", category="progress")
                 league = League(league_id, datetime.date.today().year,swid=user_swid, espn_s2=user_espn_s2, debug=False)
             except ESPNAccessDenied as e:
+                session.pop('_flashes', None)
                 flash(f"League ID: {league_id} isn't set to public. You can set it to public under 'League' > 'Settings'.", category="progress")
                 return render_template("accolades.html")
             except ESPNInvalidLeague as e:
+                session.pop('_flashes', None)
                 flash(e.args[0], category="progress")
                 return render_template("accolades.html")
             except ESPNUnknownError as e:
+                session.pop('_flashes', None)
                 flash(f"{e.args[0]}, ensure your League ID is correct", category="progress")
                 return render_template("accolades.html")
                 
