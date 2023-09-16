@@ -321,13 +321,13 @@ def index():
                 flash("Getting league data...", category="progress")
                 league = League(league_id, datetime.date.today().year,swid=user_swid, espn_s2=user_espn_s2, debug=False)
             except ESPNAccessDenied as e:
-                flash(f"League ID: {league_id} isn't set to public. You can set it to public under 'League' > 'Settings'.")
+                flash(f"League ID: {league_id} isn't set to public. You can set it to public under 'League' > 'Settings'.", category="progress")
                 return render_template("accolades.html")
             except ESPNInvalidLeague as e:
-                flash(e.args[0])
+                flash(e.args[0], category="progress")
                 return render_template("accolades.html")
             except ESPNUnknownError as e:
-                flash(f"{e.args[0]}, ensure your League ID is correct")
+                flash(f"{e.args[0]}, ensure your League ID is correct", category="progress")
                 return render_template("accolades.html")
                 
             weekly_scores = league.box_scores(week)
@@ -340,7 +340,7 @@ def index():
 
             return render_template("accolades.html", cards_data=cards_data)
         else:
-            flash("Please fill out all fields")
+            flash("Please fill out all fields", category="progress")
 
     return render_template("accolades.html")
 
