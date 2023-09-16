@@ -9,18 +9,50 @@
 
 <body>
 <div class="page-wrapper">
-        
-<form action="/" method="post">
-    Enter League ID: <input type="text" name="league_id">
-    Enter Week: 
-    <select name="week">
-        {% for i in range(1, 18) %}
-            <option value="{{ i }}">{{ i }}</option>
-        {% endfor %}
-    </select>
+   
+      
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const toggleLeagueType = document.getElementById('toggleLeagueType');
+        const privateInputs = document.getElementById('privateInputs');
 
-    <input type="submit" value="Get Accolades">
-</form>
+        toggleLeagueType.addEventListener('change', function() {
+            if (this.checked) {
+                privateInputs.style.display = "block";
+            } else {
+                privateInputs.style.display = "none";
+            }
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="toggle">
+        <input class="toggle-checkbox" type="checkbox" id="toggleLeagueType">
+        <label for="toggleLeagueType" class="toggle-switch"></label>
+        <span class="toggle-label">Private League</span>
+    </div>    
+
+    <form action="/" method="post">
+        Enter League ID: <input type="text" name="league_id">
+        Enter Week: 
+        <select name="week">
+            {% for i in range(1, 18) %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+    
+        <div id="privateInputs" style="display: none;">
+            Enter SWID: <input class="wide-input" type="text" placeholder="{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}" name="swid">
+            Enter espn_s2: <input class="wide-input" type="text" placeholder="ASCWDWhaaaaaaaaaaaaaaaaaaaa" name="espn_s2">
+            <p>These values are extracted from your cookies after login. The easiest way to view them is using <a href="https://chrome.google.com/webstore/detail/espn-private-league-key-a/bakealnpgdijapoiibbgdbogehhmaopn/related" target="_blank" rel="noopener noreferrer">this chrome plugin</a>. The extension is <a href="https://github.com/abinish/ESPNExtension" target="_blank" rel="noopener noreferrer">open source</a>.</p>
+        </div>
+        
+    
+        <input type="submit" value="Get Accolades">
+    </form>
+</div>
+
 
 {% with messages = get_flashed_messages(category_filter=["progress"]) %}
     {% if messages %}

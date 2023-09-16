@@ -17,15 +17,19 @@
 }
 
 .card-title {
-    margin: 0;
+    margin: 0px;
     font-size: 32px;
 }
 
 .card-subtitle {
-    margin: 2;
+    margin: 2px;
     margin-bottom: 10px;
     font-size: 16px;
     color: #777;
+}
+
+.wide-input {
+    width: 400px; /* You can adjust this width value as needed */
 }
 
 .card-body {
@@ -130,3 +134,74 @@ body, html {
 .contact-info a:hover {
     text-decoration: underline;
 }
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, ".SFNSText-Regular", "Helvetica Neue", "Roboto", "Segoe UI", sans-serif;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;  /* vertically center-align items */
+}
+
+
+.toggle-switch {
+  display: inline-block;
+  background: #ccc;
+  border-radius: 16px;
+  width: 58px;
+  height: 32px;
+  position: relative;
+  vertical-align: middle;
+  transition: background 0.25s;
+}
+.toggle-switch:before, .toggle-switch:after {
+  content: "";
+}
+.toggle-switch:before {
+  display: block;
+  background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: left 0.25s;
+}
+.toggle:hover .toggle-switch:before {
+  background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+.toggle-checkbox:checked + .toggle-switch {
+  background: #56c080;
+}
+.toggle-checkbox:checked + .toggle-switch:before {
+  left: 30px;
+}
+
+.toggle-checkbox {
+  position: absolute;
+  visibility: hidden;
+}
+
+.toggle-label {
+  margin-left: 5px;
+  position: relative;
+  top: 2px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+  

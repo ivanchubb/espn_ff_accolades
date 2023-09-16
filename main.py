@@ -304,8 +304,11 @@ def prepare_card(accolade):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     cards_data = []
+
     if request.method == 'POST':
         league_id = request.form.get('league_id')
+        user_swid = request.form.get('swid')
+        user_espn_s2 = request.form.get('espn_s2')
         try:
             week = int(request.form.get('week'))
             if week > 17 or week < 1:
@@ -316,7 +319,7 @@ def index():
         if league_id and week:
             try:
                 flash("Getting league data...", category="progress")
-                league = League(league_id, datetime.date.today().year, debug=False)
+                league = League(league_id, datetime.date.today().year,swid=user_swid, espn_s2=user_espn_s2, debug=False)
             except ESPNAccessDenied as e:
                 flash(f"League ID: {league_id} isn't set to public. You can set it to public under 'League' > 'Settings'.")
                 return render_template("accolades.html")
