@@ -12,19 +12,26 @@
         
 <form action="/" method="post">
     Enter League ID: <input type="text" name="league_id">
-    Enter Week: <input type="number" name="week">
+    Enter Week: 
+    <select name="week">
+        {% for i in range(1, 18) %}
+            <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+    </select>
+
     <input type="submit" value="Get Accolades">
 </form>
 
-{% with messages = get_flashed_messages() %}
+{% with messages = get_flashed_messages(category_filter=["progress"]) %}
     {% if messages %}
-    <ul class="flashes">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
+        <div class="flash-messages">
+            {% for message in messages %}
+                <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        </div>
     {% endif %}
 {% endwith %}
+
 
 {% if not cards_data %}
     <div id="instructions">

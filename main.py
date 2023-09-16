@@ -4,7 +4,7 @@ import datetime
 import secrets
 from espn_api.football import League
 from espn_api.requests.espn_requests import ESPNAccessDenied, ESPNInvalidLeague, ESPNUnknownError
-from flask import Flask, request, render_template, flash
+from flask import Flask, request, render_template, flash, session
 
 app = Flask(__name__, template_folder="templates")
 secret = secrets.token_urlsafe(32)
@@ -301,7 +301,6 @@ def prepare_card(accolade):
         
     return card
 
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     cards_data = []
@@ -316,6 +315,7 @@ def index():
             return render_template("accolades.html")
         if league_id and week:
             try:
+                flash("Getting league data...", category="progress")
                 league = League(league_id, datetime.date.today().year, debug=False)
             except ESPNAccessDenied as e:
                 flash(f"League ID: {league_id} isn't set to public. You can set it to public under 'League' > 'Settings'.")
@@ -328,11 +328,19 @@ def index():
                 return render_template("accolades.html")
                 
             weekly_scores = league.box_scores(week)
-            accolades = get_accolades(weekly_scores)
-            for accolade in accolades:
-                cards_data.append(prepare_card(accolade))
 
-    return render_template("accolades.html", cards_data=cards_data)
+            flash("Calculating accolades...", category="progress")
+            accolades = get_accolades(weekly_scores)
+
+            cards_data = [prepare_card(accolade) for accolade in accolades]
+            session.pop('_flashes', None)
+
+            return render_template("accolades.html", cards_data=cards_data)
+        else:
+            flash("Please fill out all fields")
+
+    return render_template("accolades.html")
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
