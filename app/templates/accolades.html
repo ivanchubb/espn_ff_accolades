@@ -38,7 +38,7 @@
         Enter Week: 
         <select name="week">
             {% for i in range(1, 18) %}
-                <option value="{{ i }}">{{ i }}</option>
+                <option value="{{ i }}" {% if i == current_week %}selected{% endif %}>{{ i }}</option>
             {% endfor %}
         </select>
     

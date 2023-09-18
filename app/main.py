@@ -29,6 +29,33 @@ class Accolade:
     def __repr__(self):
         return self.points
 
+def get_season_start(year):
+    """Returns the start date of the season for the given year."""
+    # Assuming the NFL season will start from September 4th or later.
+    date = datetime.datetime(year, 9, 4)
+    
+    # Find the next Thursday.
+    while date.weekday() != 3:  # 3 stands for Thursday
+        date += datetime.timedelta(days=1)
+    
+    return date
+
+def get_current_week():
+    """Returns the current NFL week."""
+    today = datetime.datetime.today()
+    
+    # If the current date is before this year's season start, 
+    # consider the end of the previous season.
+    if today < get_season_start(today.year):
+        start_date = get_season_start(today.year - 1)
+    else:
+        start_date = get_season_start(today.year)
+    
+    days_since_start = (today - start_date).days
+    current_week = (days_since_start // 7) + 1
+
+    # Ensure the week is capped at 17, in case the current date goes beyond the regular season.
+    return min(current_week, 17)
 
 def get_best_by_skill(lineup_copy: list, slot: str):
     """ gets the best player for a given slot from the provided list of players"""
@@ -304,6 +331,7 @@ def prepare_card(accolade):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     cards_data = []
+    current_week = get_current_week()
 
     if request.method == 'POST':
         league_id = request.form.get('league_id')
@@ -315,7 +343,7 @@ def index():
                 raise ValueError
         except ValueError:
             flash(f"Please provide a week between 1 and 17")
-            return render_template("accolades.html")
+            return render_template("accolades.html", current_week=current_week)
         if league_id and week:
             try:
                 flash("Getting league data...", category="progress")
@@ -323,15 +351,15 @@ def index():
             except ESPNAccessDenied as e:
                 session.pop('_flashes', None)
                 flash(f"League ID: {league_id} isn't set to public or you entered the wrong (SWID/S2 value).", category="progress")
-                return render_template("accolades.html")
+                return render_template("accolades.html", current_week=current_week)
             except ESPNInvalidLeague as e:
                 session.pop('_flashes', None)
                 flash(e.args[0], category="progress")
-                return render_template("accolades.html")
+                return render_template("accolades.html", current_week=current_week)
             except ESPNUnknownError as e:
                 session.pop('_flashes', None)
                 flash(f"{e.args[0]}, ensure your League ID is correct", category="progress")
-                return render_template("accolades.html")
+                return render_template("accolades.html", current_week=current_week)
                 
             weekly_scores = league.box_scores(week)
 
@@ -341,11 +369,12 @@ def index():
             cards_data = [prepare_card(accolade) for accolade in accolades]
             session.pop('_flashes', None)
 
-            return render_template("accolades.html", cards_data=cards_data)
+            return render_template("accolades.html", cards_data=cards_data, current_week=current_week)
         else:
             flash("Please fill out all fields", category="progress")
 
-    return render_template("accolades.html")
+    
+    return render_template("accolades.html", current_week=current_week)
 
 
 if __name__ == '__main__':

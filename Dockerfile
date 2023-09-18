@@ -14,10 +14,10 @@ RUN rm -rf /root/.cache/pip \
 
 # Copy the Flask app to the container
 WORKDIR /app
-COPY . /app/
+COPY app /app/
 
 # Copy the Nginx configuration to the right place
-COPY nginx.conf /etc/nginx/sites-available/default
+COPY app/nginx.conf /etc/nginx/sites-available/default
 
 # Expose ports for Nginx (80) and Gunicorn (8000)
 EXPOSE 80 8000
