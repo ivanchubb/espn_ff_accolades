@@ -104,5 +104,38 @@
     </div>
 </footer>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Load values from session storage and set them to the fields
+        var leagueIdValue = sessionStorage.getItem("league_id");
+        var weekValue = sessionStorage.getItem("week");
+        var swidValue = sessionStorage.getItem("swid");
+        var espnS2Value = sessionStorage.getItem("espn_s2");
+
+        if (leagueIdValue) {
+            document.querySelector("input[name='league_id']").value = leagueIdValue;
+        }
+        if (weekValue) {
+            document.querySelector("select[name='week']").value = weekValue;
+        }
+        if (swidValue) {
+            document.querySelector("input[name='swid']").value = swidValue;
+        }
+        if (espnS2Value) {
+            document.querySelector("input[name='espn_s2']").value = espnS2Value;
+        }
+
+        // When the form is submitted, save the field values to session storage
+        document.querySelector("form").addEventListener("submit", function() {
+            sessionStorage.setItem("league_id", document.querySelector("input[name='league_id']").value);
+            sessionStorage.setItem("week", document.querySelector("select[name='week']").value);
+            sessionStorage.setItem("swid", document.querySelector("input[name='swid']").value);
+            sessionStorage.setItem("espn_s2", document.querySelector("input[name='espn_s2']").value);
+        });
+    });
+</script>
+
+
+
 </body>
 </html>
