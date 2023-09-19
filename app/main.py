@@ -206,29 +206,48 @@ def get_player_awards(box_scores):
 
     boom_player = Accolade("Biggest Boom", box_scores[0].home_team, 0)
     bust_player = Accolade("Biggest Bust", box_scores[0].home_team, 999)
+    mistake_player = Accolade("Biggest Mistake", box_scores[0].home_team, 999)
 
     for matchup in box_scores:
         for lineup in [matchup.home_lineup, matchup.away_lineup]:
-            for player in lineup:
-                if player.slot_position in ["BE", "IR"]:
-                    continue
+
+            played_players = [player for player in lineup if player.slot_position not in ["BE", "IR"]]
+            benched_players = [player for player in lineup if player.slot_position == "BE"]
+
+            # Calculate boom and bust as before
+            for player in played_players:
                 performance = player.points - player.projected_points
                 if performance > boom_player.points:
                     boom_player.player = player
                     boom_player.points = performance
-                    if boom_player.player in matchup.home_lineup:
+                    if player in matchup.home_lineup:
                         boom_player.team = matchup.home_team
                     else:
                         boom_player.team = matchup.away_team
                 if performance < bust_player.points:
                     bust_player.player = player
                     bust_player.points = performance
-                    if bust_player.player in matchup.home_lineup:
+                    if player in matchup.home_lineup:
                         bust_player.team = matchup.home_team
                     else:
                         bust_player.team = matchup.away_team
 
-    return [boom_player, bust_player]
+            # Calculate biggest mistake
+            for benched_player in benched_players:
+                position_mates = [player for player in played_players if player.slot_position in benched_player.eligibleSlots]
+                if position_mates:  # There must be a played player of the same position
+                    lowest_scoring_mate = min(position_mates, key=lambda x: x.points)
+                    mistake_value = lowest_scoring_mate.points - benched_player.points
+                    if mistake_value < mistake_player.points:
+                        mistake_player.player = lowest_scoring_mate
+                        mistake_player.points = mistake_value
+                        mistake_player.benched_player = benched_player
+                        if benched_player in matchup.home_lineup:
+                            mistake_player.team = matchup.home_team
+                        else:
+                            mistake_player.team = matchup.away_team
+
+    return [boom_player, bust_player, mistake_player]
 
 
 def get_accolades(box_scores: list):
@@ -265,6 +284,12 @@ def prepare_card(accolade):
         player_proj_points = 0
         player_name = ""
 
+    try:
+        benched_player = accolade.benched_player.name
+        benched_points = accolade.benched_player.points
+    except AttributeError:
+        benched_points = 0
+        benched_player = ""
 
     diff_score = accolade.points - accolade.opp_score
     team_name = accolade.team.team_name
@@ -287,6 +312,7 @@ def prepare_card(accolade):
                         f" scoring {boom_diff:.2f} more than projected!",
         "Biggest Bust": f"{team_name} started {player_name}, the bust of the week,"
                         f" scoring {bust_diff:.2f} less than projected!",
+        "Biggest Mistake": f"{team_name} started {player_name} ({player_points:.2f} points), instead of {benched_player} ({benched_points:.2f} points)."
     }
     emoji_dict = {
     "Most Dominant Win": "💪",
@@ -298,7 +324,8 @@ def prepare_card(accolade):
     "Best Manager": "🌟",
     "Worst Manager": "🌮",
     "Biggest Boom": "💥",
-    "Biggest Bust": "📉"
+    "Biggest Bust": "📉",
+    "Biggest Mistake": "🤡"
     }
 
 
@@ -309,7 +336,7 @@ def prepare_card(accolade):
         "middle_text": getattr(accolade.team, 'team_name', ""),
         "middle_sub_text": None,
         "middle_sub_sub_text": None,
-        "points": accolade.points  # Assuming accolade always has points.
+        "points": round(accolade.points, 2)  # Assuming accolade always has points.
     }
 
     # overrides for player cards
@@ -378,5 +405,5 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)
 
