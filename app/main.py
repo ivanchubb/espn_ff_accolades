@@ -374,7 +374,12 @@ def index():
         if league_id and week:
             try:
                 flash("Getting league data...", category="progress")
-                league = League(league_id, datetime.date.today().year,swid=user_swid, espn_s2=user_espn_s2, debug=False)
+                # accounts for games in January or lookups after the season
+                # TODO: add past season lookups with an optional year field
+                year = datetime.date.today().year
+                if datetime.date.today().month < 7:
+                    year -= 1
+                league = League(league_id, year,swid=user_swid, espn_s2=user_espn_s2, debug=False)
             except ESPNAccessDenied as e:
                 session.pop('_flashes', None)
                 flash(f"League ID: {league_id} isn't set to public or you entered the wrong (SWID/S2 value).", category="progress")
